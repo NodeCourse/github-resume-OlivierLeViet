@@ -1,9 +1,10 @@
 const request = require('request');
 const express = require('express');
-const app = express();
+const bodyParser = require('body-parser');
+const fs = require('fs');
 
-const inp = getElementById("inp").value;
-const username = inp;
+const app = express();
+const file = fs.createWriteStream('./profil.json');
 
 
 function RequestFunction() {
@@ -12,13 +13,16 @@ function RequestFunction() {
         if (err) {
             console.error(err);
         } else {
-            // body is a string that needs to be parsed
+
             const user = JSON.parse(body);
+            file.write(":username");
             console.log(user);
         }
     });
 }
 
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 
 app.set('view engine', 'pug');
 app.use(express.static('public'));
@@ -27,6 +31,12 @@ app.get('/', (req, res) => {
     console.log("Appli updated:");
     res.render('index');
 });
+
+app.get('/:username', (req, res) => {
+    console.log("Appli updated:");
+    res.render('git');
+});
+
 
 app.listen(3000);
 console.log("Server listening: 3000");
