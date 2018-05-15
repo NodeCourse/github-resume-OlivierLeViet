@@ -1,42 +1,31 @@
-const request = require('request');
 const express = require('express');
-const bodyParser = require('body-parser');
-const fs = require('fs');
-
+const request = require('request');
 const app = express();
-const file = fs.createWriteStream('./profil.json');
-
-
-function RequestFunction() {
-
-    request('https://api.github.com/users/:username', (err, response, body) => {
-        if (err) {
-            console.error(err);
-        } else {
-
-            const user = JSON.parse(body);
-            file.write(":username");
-            console.log(user);
-        }
-    });
-}
-
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
-
 app.set('view engine', 'pug');
-app.use(express.static('public'));
 
-app.get('/', (req, res) => {
-    console.log("Appli updated:");
-    res.render('index');
+app.use(express.static("public"));
+
+app.get('/',(request, response) => {
+    response.render("index");
 });
 
-app.get('/:username', (req, res) => {
-    console.log("Appli updated:");
-    res.render('git');
+app.get('/user/', (req,res) =>{
+    const userName = req.query.user;
+    const accesAPI = { url:'https://api.github.com/users/' + userName, headers: {'User-Agent': "StudentProject"}}
+    console.log(userName);
+    request(accesAPI, (err,response,body) =>{
+        if (err) {
+            console.error("erreur" + err);
+        } else {
+            // body is a string that needs to be parsed
+            const user = JSON.parse(body);
+            console.log(user);
+            res.render("git" , {user});
+
+        }
+
+    });
 });
 
-
-app.listen(3000);
 console.log("Server listening: 3000");
+app.listen(3000);
