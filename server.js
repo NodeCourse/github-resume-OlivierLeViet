@@ -10,7 +10,7 @@ app.get('/',(request, response) => {
 });
 
 app.get('/user/', (req,res) =>{
-    const userName = req.query.user;
+    const userName = req.query.username;
     const accesAPI = { url:'https://api.github.com/users/' + userName, headers: {'User-Agent': "StudentProject"}}
     console.log(userName);
     request(accesAPI, (err,response,body) =>{
